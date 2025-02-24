@@ -12,15 +12,19 @@
         <h1 class="text-2xl">My Lists</h1>
         <div class="flex justify-center p-5 bg-white/15 backdrop-blur-xl rounded-3xl">
             <input id="listInput" type="text" placeholder="New List" class="text-xl outline-none w-full rounded-sm">
-            <button class="flex items-center justify-center bg-white/35 backdrop-blur-xl rounded-4xl p-3 w-[30px] h-[30px] text-black" onclick="createList()">+</button>
+            <button class="flex bg-white/35 backdrop-blur-xl rounded-4xl p-3 w-[30px] h-[30px] text-black hover:bg-white/60" onclick="createList()">
+                <span class="flex items-center justify-center h-full w-full">+</span>
+            </button>
         </div>
     </div>
     <div id="container" class="flex flex-col w-full h-full p-5 gap-5">
         <div class="flex justify-center p-5 bg-white/10 backdrop-blur-xl rounded-3xl">
             <input id="toDoInput" type="text" placeholder="To-Do" class="text-xl outline-none w-full rounded-sm">
-            <button class="flex items-center justify-center bg-white/35 backdrop-blur-xl rounded-4xl p-3 w-[90px] h-[30px] text-black" onclick="createToDo()">+</button>
+            <button class="flex bg-white/35 backdrop-blur-xl rounded-2xl p-3 w-1/9 text-black hover:bg-white/60" onclick="createToDo()">
+                <span class="flex items-center justify-center h-full w-full">+</span>
+            </button>
         </div>
-        <div id="listContainer" class="flex flex-col gap-2">
+        <div id="listContainer" class="grid grid-cols-5 gap-2">
             <!-- List items populated by script -->
         </div>
     </div>
