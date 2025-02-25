@@ -5,6 +5,8 @@ const toDoInput = document.getElementById("toDoInput");
 
 let selectedList = 0;
 let list = [{title: "example", content: ["Buy groceries","Call mom","Workout","Read a book","Plan weekend trip","Reply to emails","Water plants","Learn JavaScript","Cook dinner"]}];
+let selectedColor = "bg-cyan-800/50";
+let hover = "hover:bg-gray-600/50";
 
 (() => {
     populateList();
@@ -13,16 +15,16 @@ let list = [{title: "example", content: ["Buy groceries","Call mom","Workout","R
 })();
 
 function addKeyPressListeners() {
-    toDoInput.addEventListener("keypress", (event) => {
-        if (event.key === "Enter") {
-            event.preventDefault();
-            createToDo();
-        }
-    });
     listTitleInput.addEventListener("keypress", (event) => {
         if (event.key === "Enter") {
             event.preventDefault();
             createList();
+        }
+    });
+    toDoInput.addEventListener("keypress", (event) => {
+        if (event.key === "Enter") {
+            event.preventDefault();
+            createToDo();
         }
     });
 }
@@ -64,14 +66,14 @@ function populateListTitles() {
     titlesContainer.innerHTML = "";
     list.forEach((element, index) => {
         let span = document.createElement("span");
-        span.classList.add("text-xl", "hover:bg-black");
-        span.textContent = element.title;
+        span.classList.add("text-xl", hover, "rounded-xl", "p-5");
+        span.textContent = element.title.toLocaleUpperCase()[0] + element.title.slice(1);
         if (selectedList == index) {
-            span.classList.add("bg-black");
+            selectedModifier(span);
         }
         span.addEventListener("click", () => {
             selectedList = index;
-            span.classList.add("bg-black");
+            selectedModifier(span);
             selectedAList();
         });
         titlesContainer.appendChild(span);
@@ -81,8 +83,18 @@ function populateListTitles() {
 function selectedAList() {
     Array.from(titlesContainer.children).forEach((element, index) => {
         if (index != selectedList) {
-            element.classList.remove("bg-black");
+            deselectedModifier(element);
         }
     });
     populateList();
+}
+
+function selectedModifier(element) {
+    element.classList.add(selectedColor);
+    element.classList.remove(hover);
+}
+
+function deselectedModifier(element) {
+    element.classList.remove(selectedColor);
+    element.classList.add(hover);
 }
