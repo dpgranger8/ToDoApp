@@ -19,6 +19,7 @@ function addKeyPressListeners() {
     listTitleInput.addEventListener("keypress", (event) => {
         if (event.key === "Enter") {
             event.preventDefault();
+            toDoInput.focus();
             createList();
         }
     });
@@ -35,7 +36,7 @@ function createToDo() {
         list[selectedList].content.push(toDoInput.value);
         toDoInput.value = "";
         populateList();
-        storeLists();
+        storeAll();
     }
 }
 
@@ -46,7 +47,7 @@ function createList() {
         selectedList = list.length - 1;
         selectedAList();
         populateListTitles();
-        storeLists();
+        storeAll();
     }
 }
 
@@ -55,21 +56,32 @@ function populateList() {
     let borderDiv = document.createElement("div");
     borderDiv.classList.add("flex", "justify-center", "items-center", "p-1", "bg-linear-to-r", "from-cyan-500/50", "to-blue-500/50", "rounded-2xl", "backdrop-blur-xs");
     let contentDiv = document.createElement("div");
-    contentDiv.classList.add("flex", "items-center", "bg-white/20", "w-full", "h-full", "rounded-xl", "backdrop-blur-xs", "pl-5", "py-2", "overflow-clip");
-    list[selectedList].content.forEach(element => {
-        let borderClone = borderDiv.cloneNode();
-        let contentClone = contentDiv.cloneNode();
-        contentClone.textContent = element
-        container.appendChild(borderClone);
-        borderClone.appendChild(contentClone);
-    });
+    contentDiv.classList.add("flex", "justify-between", "items-center", "bg-white/20", "w-full", "h-full", "rounded-xl", "backdrop-blur-xs", "px-5", "py-2", "overflow-clip");
+    if (list[selectedList] != undefined) {
+        list[selectedList].content.forEach((element, index) => {
+            let borderClone = borderDiv.cloneNode();
+            let contentClone = contentDiv.cloneNode();
+            let trashCan = document.createElement("span");
+            trashCan.classList.add("material-symbols-outlined", "cursor-pointer");
+            trashCan.textContent = "delete";
+            trashCan.addEventListener("click", () => {
+                list[selectedList].content.splice(index, 1);
+                populateList();
+                storeList();
+            });
+            contentClone.textContent = element;
+            container.appendChild(borderClone);
+            borderClone.appendChild(contentClone);
+            contentClone.appendChild(trashCan);
+        });
+    }
 }
 
 function populateListTitles() {
     titlesContainer.innerHTML = "";
     list.forEach((element, index) => {
         let span = document.createElement("span");
-        span.classList.add("text-xl", hover, "rounded-xl", "p-5");
+        span.classList.add("flex", "justify-between", "text-xl", hover, "rounded-xl", "p-5");
         span.textContent = element.title.toLocaleUpperCase()[0] + element.title.slice(1);
         if (selectedList == index) {
             selectedModifier(span);
@@ -79,7 +91,17 @@ function populateListTitles() {
             selectedModifier(span);
             selectedAList();
         });
+        let trashCan = document.createElement("span");
+        trashCan.classList.add("material-symbols-outlined", "cursor-pointer");
+        trashCan.textContent = "delete";
+        trashCan.addEventListener("click", () => {
+            list.splice(index, 1);
+            selectedList--;
+            populateListTitles();
+            storeAll();
+        });
         titlesContainer.appendChild(span);
+        span.appendChild(trashCan);
     });
 }
 
@@ -109,12 +131,16 @@ function refreshPage() {
     populateListTitles();
 }
 
-function storeLists() {
+function storeList() {
     localStorage.setItem(listStorageKey, JSON.stringify(list));
-    localStorage.setItem(selectedListKey, JSON.stringify(selectedList));
 }
 
 function storeIndex() {
+    localStorage.setItem(selectedListKey, JSON.stringify(selectedList));
+}
+
+function storeAll() {
+    localStorage.setItem(listStorageKey, JSON.stringify(list));
     localStorage.setItem(selectedListKey, JSON.stringify(selectedList));
 }
 
