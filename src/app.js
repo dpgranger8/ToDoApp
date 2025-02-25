@@ -9,11 +9,27 @@ let list = [{title: "example", content: ["Buy groceries","Call mom","Workout","R
 (() => {
     populateList();
     populateListTitles();
+    addKeyPressListeners();
 })();
+
+function addKeyPressListeners() {
+    toDoInput.addEventListener("keypress", (event) => {
+        if (event.key === "Enter") {
+            event.preventDefault();
+            createToDo();
+        }
+    });
+    listTitleInput.addEventListener("keypress", (event) => {
+        if (event.key === "Enter") {
+            event.preventDefault();
+            createList();
+        }
+    });
+}
 
 function createToDo() {
     if (toDoInput.value != "") {
-        list[selectedList].push(toDoInput.value);
+        list[selectedList].content.push(toDoInput.value);
         toDoInput.value = "";
         populateList();
     }
@@ -22,7 +38,9 @@ function createToDo() {
 function createList() {
     if (listTitleInput != "") {
         list.push({title: listTitleInput.value, content: []})
+        listTitleInput.value = "";
         selectedList = list.length - 1;
+        selectedAList();
         populateListTitles();
     }
 }
@@ -48,7 +66,7 @@ function populateListTitles() {
         let span = document.createElement("span");
         span.classList.add("text-xl", "hover:bg-black");
         span.textContent = element.title;
-        if (index == 0) {
+        if (selectedList == index) {
             span.classList.add("bg-black");
         }
         span.addEventListener("click", () => {
