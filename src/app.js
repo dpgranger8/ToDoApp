@@ -3,14 +3,15 @@ const titlesContainer = document.getElementById("titlesContainer");
 const listTitleInput = document.getElementById("listInput");
 const toDoInput = document.getElementById("toDoInput");
 
-let selectedList = 0;
 let list = [{title: "example", content: ["Buy groceries","Call mom","Workout","Read a book","Plan weekend trip","Reply to emails","Water plants","Learn JavaScript","Cook dinner"]}];
+let selectedList = 0;
 let selectedColor = "bg-cyan-800/50";
 let hover = "hover:bg-gray-600/50";
+let listStorageKey = "To-Do Lists";
+let selectedListKey = "Selected List";
 
 (() => {
-    populateList();
-    populateListTitles();
+    retrieveLists();
     addKeyPressListeners();
 })();
 
@@ -34,6 +35,7 @@ function createToDo() {
         list[selectedList].content.push(toDoInput.value);
         toDoInput.value = "";
         populateList();
+        storeLists();
     }
 }
 
@@ -44,6 +46,7 @@ function createList() {
         selectedList = list.length - 1;
         selectedAList();
         populateListTitles();
+        storeLists();
     }
 }
 
@@ -92,9 +95,37 @@ function selectedAList() {
 function selectedModifier(element) {
     element.classList.add(selectedColor);
     element.classList.remove(hover);
+    storeIndex();
 }
 
 function deselectedModifier(element) {
     element.classList.remove(selectedColor);
     element.classList.add(hover);
+    storeIndex();
+}
+
+function refreshPage() {
+    populateList();
+    populateListTitles();
+}
+
+function storeLists() {
+    localStorage.setItem(listStorageKey, JSON.stringify(list));
+    localStorage.setItem(selectedListKey, JSON.stringify(selectedList));
+}
+
+function storeIndex() {
+    localStorage.setItem(selectedListKey, JSON.stringify(selectedList));
+}
+
+function retrieveLists() {
+    let storedList = localStorage.getItem(listStorageKey);
+    let storedListIndex = localStorage.getItem(selectedListKey);
+    if (storedList != null && storedListIndex != null) {
+        list = JSON.parse(storedList);
+        selectedList = JSON.parse(storedListIndex);
+        refreshPage();
+    } else {
+        refreshPage();
+    }
 }
