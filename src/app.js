@@ -3,7 +3,7 @@ const titlesContainer = document.getElementById("titlesContainer");
 const listTitleInput = document.getElementById("listInput");
 const toDoInput = document.getElementById("toDoInput");
 
-let list = [{title: "example", content: ["Buy groceries","Call mom","Workout","Read a book","Plan weekend trip","Reply to emails","Water plants","Learn JavaScript","Cook dinner"]}];
+let list = [{title: "example", content: ["Buy groceries","Call mom","Workout","Read a book","Plan weekend trip","Reply to emails","Water plants"], incompleteContent: ["Learn JavaScript","Cook dinner"]}];
 let selectedList = 0;
 let selectedColor = "bg-cyan-800/50";
 let hover = "hover:bg-gray-600/50";
@@ -69,9 +69,19 @@ function populateList() {
                 populateList();
                 storeList();
             });
-            contentClone.textContent = element;
+            let checkboxLabel = document.createElement("label");
+            checkboxLabel.classList.add("container", "flex", "justify-between", "items-center", "h-full");
+            checkboxLabel.textContent = element;
+            let checkboxInput = document.createElement("input");
+            checkboxInput.type = "checkbox";
+            let checkboxSpan = document.createElement("span")
+            checkboxSpan.classList.add("checkmark");
+            checkboxLabel.appendChild(checkboxInput);
+            checkboxLabel.appendChild(checkboxSpan);
+
             container.appendChild(borderClone);
             borderClone.appendChild(contentClone);
+            contentClone.appendChild(checkboxLabel);
             contentClone.appendChild(trashCan);
         });
     }
@@ -81,7 +91,7 @@ function populateListTitles() {
     titlesContainer.innerHTML = "";
     list.forEach((element, index) => {
         let span = document.createElement("span");
-        span.classList.add("flex", "justify-between", "text-xl", hover, "rounded-xl", "p-5");
+        span.classList.add("flex", "justify-between", "items-center", "text-xl", hover, "rounded-xl", "p-5", "overflow-clip");
         span.textContent = element.title.toLocaleUpperCase()[0] + element.title.slice(1);
         if (selectedList == index) {
             selectedModifier(span);
@@ -96,8 +106,10 @@ function populateListTitles() {
         trashCan.textContent = "delete";
         trashCan.addEventListener("click", () => {
             list.splice(index, 1);
-            selectedList--;
-            populateListTitles();
+            if (index = list.length - 1) {
+                selectedList --;
+            }
+            refreshPage();
             storeAll();
         });
         titlesContainer.appendChild(span);
