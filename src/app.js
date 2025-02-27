@@ -3,7 +3,15 @@ const titlesContainer = document.getElementById("titlesContainer");
 const listTitleInput = document.getElementById("listInput");
 const toDoInput = document.getElementById("toDoInput");
 
-let list = [{title: "example", content: ["Buy groceries","Call mom","Workout","Read a book","Plan weekend trip","Reply to emails","Water plants"], incompleteContent: ["Learn JavaScript","Cook dinner"]}];
+let list = [{title: "example", content: [
+    { text: "Buy groceries", isComplete: false },
+    { text: "Call mom", isComplete: false },
+    { text: "Workout", isComplete: false },
+    { text: "Read a book", isComplete: false },
+    { text: "Plan weekend trip", isComplete: false },
+    { text: "Reply to emails", isComplete: false },
+    { text: "Water plants", isComplete: false }
+  ]}];
 let selectedList = 0;
 let selectedColor = "bg-cyan-800/50";
 let hover = "hover:bg-gray-600/50";
@@ -33,7 +41,7 @@ function addKeyPressListeners() {
 
 function createToDo() {
     if (toDoInput.value != "") {
-        list[selectedList].content.push(toDoInput.value);
+        list[selectedList].content.push({text: toDoInput.value, isComplete: false});
         toDoInput.value = "";
         populateList();
         storeAll();
@@ -41,7 +49,7 @@ function createToDo() {
 }
 
 function createList() {
-    if (listTitleInput != "") {
+    if (listTitleInput.value != "") {
         list.push({title: listTitleInput.value, content: []})
         listTitleInput.value = "";
         selectedList = list.length - 1;
@@ -71,14 +79,18 @@ function populateList() {
             });
             let checkboxLabel = document.createElement("label");
             checkboxLabel.classList.add("container", "flex", "justify-between", "items-center", "h-full");
-            checkboxLabel.textContent = element;
+            checkboxLabel.textContent = element.text;
             let checkboxInput = document.createElement("input");
             checkboxInput.type = "checkbox";
+            checkboxInput.checked = element.isComplete;
             let checkboxSpan = document.createElement("span")
             checkboxSpan.classList.add("checkmark");
             checkboxLabel.appendChild(checkboxInput);
             checkboxLabel.appendChild(checkboxSpan);
-
+            checkboxInput.addEventListener("change", () => {
+                list[selectedList].content[index].isComplete = checkboxInput.checked;
+                storeList();
+            })
             container.appendChild(borderClone);
             borderClone.appendChild(contentClone);
             contentClone.appendChild(checkboxLabel);
